@@ -33,7 +33,7 @@ public class MusicService {
     // 스트리밍페이지 조회
     public List<PlayedListResponsDto> getAllStream(Long userId) {
         Optional <User> temp = userRepository.findById(userId);
-        User user = new User();
+        User user;
         List<PlayedListResponsDto> playedListResponsDto = new ArrayList<>();
 
         if(temp.isPresent()) {
@@ -47,12 +47,13 @@ public class MusicService {
         for(int i = 0; i < streamList.size(); i++) {
             PlayedListResponsDto playedListResponsDto1 = new PlayedListResponsDto();
 
+            playedListResponsDto1.setUserName(user.getUserName());
             playedListResponsDto1.setMusicId(streamList.get(i).getMusic().getMusicId());
             playedListResponsDto1.setArtistName(streamList.get(i).getMusic().getArtistName());
             playedListResponsDto1.setMusicTitle(streamList.get(i).getMusic().getMusicTitle());
             playedListResponsDto1.setPlayCnt(streamList.get(i).getMusic().getPlayCnt());
             playedListResponsDto1.setImageUrl(streamList.get(i).getMusic().getImageUrl());
-
+            playedListResponsDto1.setMusicUrl(streamList.get(i).getMusic().getMusicUrl());
             playedListResponsDto.add(playedListResponsDto1);
         }
 
