@@ -25,15 +25,18 @@ public class DetailBoardController {
 
     // 메인페이지 조회
     @GetMapping("/main")
-    public List<Music> getAllMusics() {
+    public MainResponseDto getAllMusics() {
         return musicService.getAllMusics();
     }
+
 
     // 스트리밍페이지 조회
     @GetMapping("/stream/{userId}")
     public List<PlayedListResponsDto> getAllStream(@PathVariable Long userId) {
         return musicService.getAllStream(userId);
     }
+
+
 
     @GetMapping("/music/{musicId}")
     public DetailBoardReturnDto getBoards(@PathVariable Long musicId) {

@@ -1,10 +1,7 @@
 package com.example.service;
 
 import com.example.dto.*;
-import com.example.model.Comment;
-import com.example.model.Music;
-import com.example.model.PlayedList;
-import com.example.model.User;
+import com.example.model.*;
 import com.example.repository.CommentRepository;
 import com.example.repository.MusicRepository;
 import com.example.repository.PlayedListRepository;
@@ -16,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 @RequiredArgsConstructor
 @Service
 public class MusicService {
@@ -26,15 +24,34 @@ public class MusicService {
 
 
     // 메인페이지 조회
-    public List<Music> getAllMusics() {
-        return musicRepository.findAll();
+    public MainResponseDto getAllMusics() {
+        MainResponseDto mainResponseDto = new MainResponseDto();
+        List<Music> allMusicList = musicRepository.findAll();
+        mainResponseDto.setAllMusicList(allMusicList);
+
+        // 카테고리
+        List<Music> hiphopCategoryMusic = musicRepository.findAllByMusicCategoryOrderByPlayCntDesc(MusicCategoryEnum.HIPHOP.getCategory());
+        List<Music> rockCategoryMusic = musicRepository.findAllByMusicCategoryOrderByPlayCntDesc(MusicCategoryEnum.ROCK.getCategory());
+        mainResponseDto.setHiphopCategoryMusic(hiphopCategoryMusic);
+        mainResponseDto.setRockCategoryMusic(rockCategoryMusic);
+
+        // top5
+        List<Music> tempMusicList = musicRepository.findAllByOrderByPlayCntDesc();
+        List<Music> musicList = new ArrayList<>();
+        for (int i =0; i<5; i++) {
+            musicList.add(tempMusicList.get(i));
+        }
+        mainResponseDto.setTopMusicList(musicList);
+        return mainResponseDto;
     }
+
 
     // 스트리밍페이지 조회
     public List<PlayedListResponsDto> getAllStream(Long userId) {
         Optional <User> temp = userRepository.findById(userId);
         User user;
         List<PlayedListResponsDto> playedListResponsDto = new ArrayList<>();
+
 
         if(temp.isPresent()) {
             user = temp.get();
@@ -44,8 +61,35 @@ public class MusicService {
 
         List<PlayedList> streamList = playedListRepository.findAllByUser(user);
 
+
         for(int i = 0; i < streamList.size(); i++) {
             PlayedListResponsDto playedListResponsDto1 = new PlayedListResponsDto();
+            Music music;
+            List<CommentListDto> commentListDtos = new ArrayList<>();
+
+            Optional <Music> temp3 = musicRepository.findById(streamList.get(i).getMusic().getMusicId());
+            if(temp3.isPresent()) {
+                music = temp3.get();
+            } else {
+                throw new IllegalArgumentException("해당 음악이 존재하지 않습니다!");
+            }
+            List<Comment> comments = commentRepository.findAllByMusic(music);
+
+            // 가져온 댓글 List로 dto에 set
+            for (int j = 0; j <comments.size(); j++) {
+                CommentListDto commentListDto = new CommentListDto();
+
+                commentListDto.setCommentId(comments.get(j).getCommentId());
+                commentListDto.setCommentContent(comments.get(j).getCommentContent());
+                commentListDto.setCommentUser(comments.get(j).getUser().getUserName());
+                commentListDto.setCreatedAt(comments.get(j).getCreatedAt());
+                commentListDto.setUserImage(comments.get(j).getUser().getUserImage());
+                commentListDto.setCommentTime(comments.get(j).getCommentTime());
+
+                commentListDtos.add(commentListDto);
+            }
+            // 응답 dto List에 set
+            playedListResponsDto1.setCommentListDtos(commentListDtos);
 
             playedListResponsDto1.setUserName(user.getUserName());
             playedListResponsDto1.setMusicId(streamList.get(i).getMusic().getMusicId());
@@ -54,9 +98,9 @@ public class MusicService {
             playedListResponsDto1.setPlayCnt(streamList.get(i).getMusic().getPlayCnt());
             playedListResponsDto1.setImageUrl(streamList.get(i).getMusic().getImageUrl());
             playedListResponsDto1.setMusicUrl(streamList.get(i).getMusic().getMusicUrl());
+
             playedListResponsDto.add(playedListResponsDto1);
         }
-
         return playedListResponsDto;
     }
 
@@ -185,6 +229,8 @@ public class MusicService {
         return musicRepository.save(music);
 
     }
+
+
 }
 
 

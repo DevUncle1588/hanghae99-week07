@@ -1,5 +1,6 @@
 package com.example.model;
 
+import com.example.dto.MusicDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,9 +34,6 @@ public class Music extends Timestamped {
     private Long playCnt;
 
     @Column(nullable = false)
-    private  String musicCategory;
-
-
-
+    private String musicCategory;
 
 }
