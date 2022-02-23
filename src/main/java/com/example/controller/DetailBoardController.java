@@ -56,10 +56,11 @@ public class DetailBoardController {
 
     @PostMapping("/music")
 //    public Music uploadMusic(@RequestParam("images") MultipartFile multipartFile, @RequestBody MusicDto musicDto) {
-    public Music uploadMusic(@ModelAttribute MusicDto musicDto, @RequestParam(required = false)MultipartFile multipartFile) {
+    public Music uploadMusic(@ModelAttribute MusicDto musicDto, @RequestParam("music") MultipartFile musicFile, @RequestParam("image") MultipartFile imageFile) {
 //        System.out.println("뮤지션="+request.getMusicDto().getArtistName());
-        String musicS3Url = s3Uploader.upload(multipartFile, "static");
-        return musicService.uploadMusic(musicDto, musicS3Url);
+        String musicS3Url = s3Uploader.upload(musicFile, "static");
+        String imageS3Url = s3Uploader.upload(imageFile, "picture");
+        return musicService.uploadMusic(musicDto, musicS3Url, imageS3Url);
     }
 
     @PostMapping("/user")

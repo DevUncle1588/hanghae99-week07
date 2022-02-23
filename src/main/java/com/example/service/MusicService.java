@@ -217,14 +217,14 @@ public class MusicService {
         return commentListDto;
     }
 
-    public Music uploadMusic(MusicDto musicDto, String musicS3Url) {
+    public Music uploadMusic(MusicDto musicDto, String musicS3Url, String imageS3Url) {
         Music music = new Music();
         music.setMusicTitle(musicDto.getMusicTitle());
         music.setMusicUrl(musicS3Url);
+        music.setImageUrl(imageS3Url);
         music.setMusicCategory(musicDto.getMusicCategory());
         music.setPlayCnt(0L);
         music.setArtistName(musicDto.getArtistName());
-        music.setImageUrl(musicDto.getImageUrl());
 
         return musicRepository.save(music);
 

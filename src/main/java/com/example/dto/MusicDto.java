@@ -9,18 +9,12 @@ import javax.persistence.Column;
 public class MusicDto {
     private String musicTitle;
     private String artistName;
-    private String musicUrl;
-    private String imageUrl;
-    private Long playCnt;
     private  String musicCategory;
 
     @Builder
     public MusicDto(String musicTitle, String artistName, String musicUrl, String imageUrl, Long playCnt, String musicCategory) {
         this.musicTitle = musicTitle;
         this.artistName = artistName;
-        this.musicUrl = musicUrl;
-        this.imageUrl = imageUrl;
-        this.playCnt = playCnt;
         this.musicCategory = musicCategory;
     }
 }

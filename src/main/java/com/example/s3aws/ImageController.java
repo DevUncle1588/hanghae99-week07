@@ -23,8 +23,11 @@ public class ImageController {
 
     @PostMapping("/images")
     @ResponseBody
-    public String upload(@RequestParam("images") MultipartFile multipartFile) throws IOException {
-        return s3Uploader.upload(multipartFile, "static");
+    public String upload(@RequestParam("music") MultipartFile musicFile, @RequestParam("image") MultipartFile imageFile) throws IOException {
+        return s3Uploader.upload(musicFile, "static");
+//        s3Uploader.upload(imageFile, "picture");
+
+
     }
 }
 
